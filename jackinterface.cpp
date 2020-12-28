@@ -17,6 +17,7 @@ JackInterface::JackInterface():
             jackDrivers.insert(someDriver, (jackctl_driver_t *)drivers->data);
             drivers = drivers->next;
         }
+
     }
 }
 

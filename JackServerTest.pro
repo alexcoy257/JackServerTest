@@ -37,14 +37,14 @@ SOURCES += \
     jackparameterform.cpp \
     main.cpp \
     jackwindow.cpp \
-    qjackctlinterfacecombobox.cpp
+    qjackctlInterfaceComboBox.cpp
 
 HEADERS += \
     jackinterface.h \
     jackparameterform.h \
     jackwindow.h \
     portaudio.h \
-    qjackctlinterfacecombobox.h
+    qjackctlInterfaceComboBox.h
 
 FORMS += \
     jackparameterform.ui \

@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QComboBox>
 
-#include "qjackctlinterfacecombobox.h"
+#include "qjackctlInterfaceComboBox.h"
 #include "ui_jackparameterform.h"
 
 namespace Ui {
