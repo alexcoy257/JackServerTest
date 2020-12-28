@@ -25,6 +25,8 @@ public:
      QComboBox * m_srChoice;
      qjackctlInterfaceComboBox * iFaceBox;
      qjackctlInterfaceComboBox * oFaceBox;
+     QLabel * iFaceLabel;
+     QLabel * oFaceLabel;
      void sendAllParameters();
 
 signals:

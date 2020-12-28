@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>311</width>
-    <height>172</height>
+    <height>194</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,7 @@
     <widget class="QComboBox" name="driverBox"/>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="iFaceLabel">
      <property name="text">
       <string>In Device</string>
      </property>
@@ -44,7 +44,7 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="oFaceLabel">
      <property name="text">
       <string>Out Device</string>
      </property>
@@ -170,7 +170,7 @@
   <customwidget>
    <class>qjackctlInterfaceComboBox</class>
    <extends>QComboBox</extends>
-   <header>qjackctlinterfacecombobox.h</header>
+   <header>qjackctlInterfaceComboBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

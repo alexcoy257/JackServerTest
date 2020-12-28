@@ -17,6 +17,14 @@ JackWindow::JackWindow(QWidget *parent)
     ui->jpf->iFaceBox->setCurrentText("(default)");
     ui->jpf->oFaceBox->setup(ui->jpf->driverBox, 2, "(default)" );
     ui->jpf->oFaceBox->setCurrentText("(default)");
+#ifdef __MAC_OSX__
+    //These are useless with the current state of JackRouter. We just want the plain inputs!
+    ui->jpf->iFaceBox->hide();
+    ui->jpf->iFaceLabel->hide();
+    ui->jpf->oFaceBox->hide();
+    ui->jpf->oFaceLabel->hide();
+#endif
+
     QScopedPointer<QStringList> drivers(jackServer.getDrivers());
     for (QString s : *drivers){
         ui->jpf->driverBox->addItem(s);

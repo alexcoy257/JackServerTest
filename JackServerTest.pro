@@ -23,6 +23,15 @@ DEFINES += CONFIG_ALSA_SEQ
 LIBS += -ljack -ljackserver -lasound
 }
 
+macx{
+DEFINES += CONFIG_COREAUDIO __MAC_OSX__
+
+INCLUDEPATH +=/Volumes/Alex_Coy_Projects_2/jack2/include
+
+LIBS += -framework CoreAudio -framework CoreFoundation
+LIBS += -L/Volumes/Alex_Coy_Projects_2/jack2/lib -ljack -ljackserver
+}
+
 SOURCES += \
     jackinterface.cpp \
     jackparameterform.cpp \

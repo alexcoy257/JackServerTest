@@ -11,6 +11,8 @@ JackParameterForm::JackParameterForm(QWidget *parent) :
     m_srChoice = ui->m_srChoice;
     iFaceBox = ui->iFaceBox;
     oFaceBox = ui->oFaceBox;
+    iFaceLabel = ui->iFaceLabel;
+    oFaceLabel = ui->oFaceLabel;
 
     QObject::connect(ui->m_fppChoice, &QComboBox::currentTextChanged, this,
        &JackParameterForm::sendNewPeriod
