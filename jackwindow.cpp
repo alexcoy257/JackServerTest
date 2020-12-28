@@ -34,6 +34,18 @@ JackWindow::JackWindow(QWidget *parent)
     QObject::connect(ui->startJackButton, &QAbstractButton::released, &jackServer, &JackInterface::start);
     QObject::connect(ui->stopJackButton, &QAbstractButton::released, &jackServer, &JackInterface::stop);
 
+    QObject::connect(ui->jpf->iFaceBox, &qjackctlInterfaceComboBox::setSubdevice, this, [=](const QString & dev){
+        QString tmp = "capture";
+        QVariant tmpv = QVariant(dev);
+        jackServer.setParameter(tmp, tmpv);
+    });
+
+    QObject::connect(ui->jpf->oFaceBox, &qjackctlInterfaceComboBox::setSubdevice, this, [=](const QString & dev){
+        QString tmp = "playback";
+        QVariant tmpv = QVariant(dev);
+        jackServer.setParameter(tmp, tmpv);
+    });
+
     ui->jpf->sendAllParameters();
 }
 

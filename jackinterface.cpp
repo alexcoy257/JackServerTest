@@ -1,7 +1,11 @@
 #include "jackinterface.h"
 
 JackInterface::JackInterface():
+#ifdef JACKCTL_H__2EEDAD78_DF4C_4B26_83B7_4FF1A446A47E__INCLUDED
+    jackServer(jackctl_server_create(NULL, NULL))
+#else
  jackServer(jackctl_server_create2(NULL, NULL, NULL))
+#endif
 {
     if(jackServer){
         qDebug() << "Jack server made successfully.";
@@ -29,14 +33,7 @@ QStringList * JackInterface::getDrivers(){
 void JackInterface::setDriver(const QString & driver){
     m_driver = jackDrivers[driver];
     if (m_driver){
-        jackDriverParams = {};
-        const JSList * params = jackctl_driver_get_parameters(m_driver);
-        while (params){
-            QString someParameter = QString::fromStdString(jackctl_parameter_get_name((jackctl_parameter_t *)params->data));
-            jackDriverParams.insert(someParameter, (jackctl_parameter_t *)params->data);
-            params = params->next;
-        }
-        emit paramsAvailable();
+        updateParamStructure();
     }
 }
 
@@ -60,10 +57,12 @@ void JackInterface::setParameter(QString & param, QVariant & value){
     bool okay;
     switch (jparamtype){
     case JackParamInt:
-        jparamvalue.i = value.toInt(&okay);
+        okay = value.canConvert(QVariant::Int);
+        jparamvalue.i = value.toInt();
         break;
     case JackParamBool:
-        jparamvalue.i = value.toInt(&okay);
+        okay = value.canConvert(QVariant::Bool);
+        jparamvalue.b = value.toBool();
         break;
     case JackParamString:{
         QString tqs = value.toString();
@@ -90,6 +89,33 @@ void JackInterface::setParameter(QString & param, QVariant & value){
         qDebug() <<"Set " <<param <<" to " <<value;
     }
     return;
+}
+
+void JackInterface::updateParamStructure(){
+    jackDriverParams = {};
+    const JSList * params = jackctl_driver_get_parameters(m_driver);
+    while (params){
+        jackctl_parameter_t * cParam = (jackctl_parameter_t *)params->data;
+        QString someParameter = QString::fromStdString(jackctl_parameter_get_name(cParam));
+        qDebug() << "Looking at: " <<someParameter;
+        jackctl_param_type_t cParamType = jackctl_parameter_get_type(cParam);
+        if(jackctl_parameter_has_enum_constraint(cParam)){
+            uint32_t numConstraints = jackctl_parameter_get_enum_constraints_count(cParam);
+            QVector<JackParamValue> cParamConstraints(numConstraints);
+            for (uint32_t i=0; i<numConstraints; i++){
+                cParamConstraints[i].reset(cParamType,
+                            jackctl_parameter_get_enum_constraint_value(cParam, i));
+            }
+
+            for (JackParamValue v: cParamConstraints){
+                qDebug() <<"Constraint: " <<v.value();
+            }
+        }
+        jackDriverParams.insert(someParameter, (jackctl_parameter_t *)params->data);
+        params = params->next;
+
+    }
+    emit paramsAvailable();
 }
 
 void JackInterface::start(){

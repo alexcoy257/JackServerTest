@@ -462,6 +462,7 @@ void qjackctlInterfaceComboBox::populateModel (void)
     QComboBox::setCurrentIndex(iCurCard);
 
     pLineEdit->setText(sCurName);
+    emit setSubdevice(pLineEdit->text());
 
     QComboBox::setUpdatesEnabled(true);
     QComboBox::blockSignals(bBlockSignals);

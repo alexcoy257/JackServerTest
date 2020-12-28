@@ -21,6 +21,10 @@
 #ifndef __qjackctlInterfaceComboBox_h
 #define __qjackctlInterfaceComboBox_h
 
+#define QJACKCTL_DUPLEX 0
+#define QJACKCTL_CAPTURE 1
+#define QJACKCTL_PLAYBACK 2
+
 #include <QComboBox>
 
 
@@ -33,12 +37,16 @@ class QStandardItemModel;
 
 class qjackctlInterfaceComboBox : public QComboBox
 {
+    Q_OBJECT
 public:
 
     // Constructor.
     qjackctlInterfaceComboBox(QWidget *pPrent = 0);
 
     void setup(QComboBox *pDriverComboBox, int iAudio, const QString& sDefName);
+
+signals:
+    void setSubdevice(const QString & name);
 
 protected:
 

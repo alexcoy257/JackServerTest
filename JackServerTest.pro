@@ -17,6 +17,12 @@ LIBS += "C:\Program Files\JACK2\lib\libjackserver64.lib"
 LIBS += "C:\msys64\mingw64\lib\libportaudio.dll.a"
 }
 
+linux{
+DEFINES += CONFIG_ALSA_SEQ
+
+LIBS += -ljack -ljackserver -lasound
+}
+
 SOURCES += \
     jackinterface.cpp \
     jackparameterform.cpp \
