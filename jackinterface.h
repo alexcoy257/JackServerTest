@@ -10,7 +10,9 @@
 #include <jack/control.h>
 #define signals public
 
-class JackInterface : public QObject
+#include "lrnetjackservertest.h"
+
+class LRNETJACKSERVERTEST_EXPORT JackInterface : public QObject
 {
     Q_OBJECT
     struct JackServerDeleter
@@ -95,8 +97,8 @@ public:
 
 public slots:
     void setParameter(QString & name, QVariant & value);
-    void start();
-    void stop();
+    int start();
+    int stop();
 
 signals:
     void paramsAvailable();
@@ -108,6 +110,8 @@ private:
     QMap<QString,jackctl_parameter_t *> jackDriverParams;
     QMap<QString,JackParamValue> jackDriverDefaultValues;
     jackctl_driver_t * m_driver;
+
+    bool m_jackRunning = false;
 
     void updateParamStructure();
 };
