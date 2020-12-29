@@ -6,6 +6,8 @@
 
 #include "qjackctlInterfaceComboBox.h"
 #include "ui_jackparameterform.h"
+#include "jackinterface.h"
+
 
 namespace Ui {
 class JackParameterForm;
@@ -14,7 +16,7 @@ class JackParameterForm;
 class JackParameterForm : public QWidget
 {
     Q_OBJECT
-
+    JackInterface jackServer;
      Ui::JackParameterForm *ui;
 public:
     explicit JackParameterForm(QWidget *parent = nullptr);

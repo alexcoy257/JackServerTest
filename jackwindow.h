@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QDebug>
 
-#include "jackinterface.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class JackWindow; }
@@ -20,7 +20,7 @@ public:
 
 private:
     Ui::JackWindow *ui;
-    JackInterface jackServer;
+
 
 };
 #endif // JACKWINDOW_H

@@ -139,12 +139,12 @@ int JackInterface::stop(){
     qDebug() <<"Try to stop Jack...";
     if (m_jackRunning){
     if(jackctl_server_stop(jackServer.data())){
-        return 0;
-            qDebug() <<"Server stopped successfully. ";
+        qDebug() <<"Server stopped successfully. ";
+        return 0;       
     }
     else{
-        return 1;
         qDebug() <<"Server couldn't stop. ";
+        return 1;
     }
     }
     return 0;

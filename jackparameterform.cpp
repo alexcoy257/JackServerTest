@@ -14,6 +14,19 @@ JackParameterForm::JackParameterForm(QWidget *parent) :
     iFaceLabel = ui->iFaceLabel;
     oFaceLabel = ui->oFaceLabel;
 
+    ui->iFaceBox->setup(ui->driverBox, 1, "(default)" );
+    //ui->iFaceBox->setCurrentText("(default)");
+    ui->oFaceBox->setup(ui->driverBox, 2, "(default)" );
+    //ui->oFaceBox->setCurrentText("(default)");
+
+#ifdef __MAC_OSX__
+    //These are useless with the current state of JackRouter. We just want the plain inputs!
+    ui->iFaceBox->hide();
+    ui->iFaceLabel->hide();
+    ui->oFaceBox->hide();
+    ui->oFaceLabel->hide();
+#endif
+
     QObject::connect(ui->m_fppChoice, &QComboBox::currentTextChanged, this,
        &JackParameterForm::sendNewPeriod
     );
@@ -21,9 +34,45 @@ JackParameterForm::JackParameterForm(QWidget *parent) :
     QObject::connect(ui->m_srChoice, &QComboBox::currentTextChanged, this,
        &JackParameterForm::sendNewRate
     );
+
+
+
+    QScopedPointer<QStringList> drivers(jackServer.getDrivers());
+    for (QString s : *drivers){
+        ui->driverBox->addItem(s);
+    }
+
+    QObject::connect(ui->driverBox, &QComboBox::currentTextChanged, &jackServer, &JackInterface::setDriver);
+
+
+    QObject::connect(&jackServer, &JackInterface::paramsAvailable, this, [=](){
+        QScopedPointer<QStringList> params(jackServer.getDriverParams());
+     for (QString p : *params)
+         qDebug() << p;
+    });
+
+    QObject::connect(ui->m_startJackButton, &QAbstractButton::released, &jackServer, &JackInterface::start);
+    QObject::connect(ui->m_stopJackButton, &QAbstractButton::released, &jackServer, &JackInterface::stop);
+
+#ifndef __MAC_OSX__
+    QObject::connect(ui->iFaceBox, &qjackctlInterfaceComboBox::setSubdevice, this, [=](const QString & dev){
+        QString tmp = "capture";
+        QVariant tmpv = QVariant(dev);
+        jackServer.setParameter(tmp, tmpv);
+    });
+
+    QObject::connect(ui->oFaceBox, &qjackctlInterfaceComboBox::setSubdevice, this, [=](const QString & dev){
+        QString tmp = "playback";
+        QVariant tmpv = QVariant(dev);
+        jackServer.setParameter(tmp, tmpv);
+    });
+#endif
+
+    sendAllParameters();
 }
 
 void JackParameterForm::sendAllParameters(){
+    jackServer.setDriver(ui->driverBox->currentText());
     sendNewRate(ui->m_srChoice->currentText());
     sendNewPeriod(ui->m_fppChoice->currentText());
 }
@@ -31,12 +80,12 @@ void JackParameterForm::sendAllParameters(){
 void JackParameterForm::sendNewRate(const QString & value){
         QString tmp = "rate";
         QVariant tmpv = QVariant(value.toInt());
-        emit setParameter(tmp, tmpv);
+        jackServer.setParameter(tmp, tmpv);
     }
 void JackParameterForm::sendNewPeriod(const QString & value){
         QString tmp = "period";
         QVariant tmpv = QVariant(value.toInt());
-        emit setParameter(tmp, tmpv);
+        jackServer.setParameter(tmp, tmpv);
     }
 
 JackParameterForm::~JackParameterForm()
