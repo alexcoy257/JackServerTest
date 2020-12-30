@@ -3,20 +3,32 @@
 
 #include <QWidget>
 #include <QComboBox>
+#include <QLabel>
 
-#include "qjackctlInterfaceComboBox.h"
+
+#include "lrnetjackservertest.h"
+
+#ifdef LRNETJACKSERVERTEST_LIBRARY
+
 #include "ui_jackparameterform.h"
 #include "jackinterface.h"
+#include "qjackctlInterfaceComboBox.h"
+
+#endif
+
 
 
 namespace Ui {
 class JackParameterForm;
 }
 
-class JackParameterForm : public QWidget
+class qjackctlInterfaceComboBox;
+class JackInterface;
+
+class LRNETJACKSERVERTEST_EXPORT JackParameterForm : public QWidget
 {
     Q_OBJECT
-    JackInterface jackServer;
+    JackInterface * jackServer;
      Ui::JackParameterForm *ui;
 public:
     explicit JackParameterForm(QWidget *parent = nullptr);
