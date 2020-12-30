@@ -121,10 +121,16 @@ void JackInterface::updateParamStructure(){
 
 int JackInterface::start(){
     qDebug() <<"Try to start Jack...";
+    if(m_jackRunning){
+        qDebug() <<"Jack already running!";
+        emit jackStarted();
+        return 1;
+    }
     if(jackctl_server_open(jackServer.data(), m_driver)){
         if(jackctl_server_start(jackServer.data())){
             qDebug() <<"Started Jack!";
             m_jackRunning = true;
+            emit jackStarted();
             return 0;
         }
         else
@@ -140,6 +146,8 @@ int JackInterface::stop(){
     if (m_jackRunning){
     if(jackctl_server_stop(jackServer.data())){
         qDebug() <<"Server stopped successfully. ";
+        m_jackRunning = false;
+        emit jackStopped();
         return 0;       
     }
     else{
@@ -147,5 +155,7 @@ int JackInterface::stop(){
         return 1;
     }
     }
+    emit jackStopped();
     return 0;
+
 }

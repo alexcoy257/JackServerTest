@@ -55,6 +55,8 @@ JackParameterForm::JackParameterForm(QWidget *parent) :
 
     QObject::connect(ui->m_startJackButton, &QAbstractButton::released, jackServer, &JackInterface::start);
     QObject::connect(ui->m_stopJackButton, &QAbstractButton::released, jackServer, &JackInterface::stop);
+    QObject::connect(jackServer, &JackInterface::jackStarted, this, [=](){emit jackStarted();});
+    QObject::connect(jackServer, &JackInterface::jackStopped, this, [=](){emit jackStopped();});
 
 #ifndef __MAC_OSX__
     QObject::connect(ui->iFaceBox, &qjackctlInterfaceComboBox::setSubdevice, this, [=](const QString & dev){
