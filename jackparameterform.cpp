@@ -59,20 +59,24 @@ JackParameterForm::JackParameterForm(QWidget *parent) :
     QObject::connect(jackServer, &JackInterface::jackStopped, this, [=](){emit jackStopped();});
 
 #ifndef __MAC_OSX__
-    QObject::connect(ui->iFaceBox, &qjackctlInterfaceComboBox::setSubdevice, this, [=](const QString & dev){
+    QObject::connect(ui->iFaceBox, &qjackctlInterfaceComboBox::currentTextChanged, this, [=](const QString & dev){
         QString tmp = "capture";
         QVariant tmpv = QVariant(dev);
-        jackServer->setParameter(tmp, tmpv);
+        jackServer->setDriverParameter(tmp, tmpv);
     });
 
-    QObject::connect(ui->oFaceBox, &qjackctlInterfaceComboBox::setSubdevice, this, [=](const QString & dev){
+    QObject::connect(ui->oFaceBox, &qjackctlInterfaceComboBox::currentTextChanged, this, [=](const QString & dev){
         QString tmp = "playback";
         QVariant tmpv = QVariant(dev);
-        jackServer->setParameter(tmp, tmpv);
+        jackServer->setDriverParameter(tmp, tmpv);
     });
 #endif
 
     sendAllParameters();
+    {QString arg = "verbose";
+     QVariant v(true);
+    jackServer->setServerParameter(arg, v);
+    }
 }
 
 void JackParameterForm::sendAllParameters(){
@@ -84,12 +88,12 @@ void JackParameterForm::sendAllParameters(){
 void JackParameterForm::sendNewRate(const QString & value){
         QString tmp = "rate";
         QVariant tmpv = QVariant(value.toInt());
-        jackServer->setParameter(tmp, tmpv);
+        jackServer->setDriverParameter(tmp, tmpv);
     }
 void JackParameterForm::sendNewPeriod(const QString & value){
         QString tmp = "period";
         QVariant tmpv = QVariant(value.toInt());
-        jackServer->setParameter(tmp, tmpv);
+        jackServer->setDriverParameter(tmp, tmpv);
     }
 
 JackParameterForm::~JackParameterForm()

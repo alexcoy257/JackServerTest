@@ -7,7 +7,7 @@ CONFIG += c++11
 TARGET = lrnetjackserver
 
 CONFIG += file_copies
-#CONFIG += build_lib
+CONFIG += build_lib
 
 build_lib{
 COPIES += libraryHeaders
@@ -30,13 +30,16 @@ DESTDIR=./bin
 
 win32{
 DEFINES += CONFIG_PORTAUDIO
-INCLUDEPATH += "C:\Program Files\JACK2\include"
+INCLUDEPATH += "C:\msys64\mingw64\include"
 CONFIG += static
-DEFINES += STATIC_LRLIBJACKSERVER
-LIBS += "C:\Program Files\JACK2\lib\libjack64.lib"
-LIBS += "C:\Program Files\JACK2\lib\libjackserver64.lib"
-LIBS += "C:\msys64\mingw64\lib\libportaudio.a"
-LIBS += -lsetupapi -lwinmm
+#DEFINES += STATIC_LRLIBJACKSERVER
+LIBS += "C:\msys64\mingw64\lib\libjack64.dll.a"
+LIBS += "C:\msys64\mingw64\lib\libjackserver64.dll.a"
+#LIBS += -Bstatic "C:\msys64\mingw64\lib\libportaudio.a" -Bdynamic
+LIBS += -mthreads -IC:/msys64/mingw64/include -LC:/msys64/mingw64/lib
+LIBS += -lportaudio -lwinmm -lm -luuid -lsetupapi -lole32
+
+#LIBS += -lsetupapi -lwinmm
 }
 
 linux{
@@ -67,7 +70,6 @@ HEADERS += \
     jackinterface.h \
     jackparameterform.h \
     jackwindow.h \
-    portaudio.h \
     qjackctlInterfaceComboBox.h \
     lrnetjackservertest.h
 

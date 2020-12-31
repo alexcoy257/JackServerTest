@@ -11,7 +11,7 @@ JackInterface::JackInterface():
     if(jackServer){
         qDebug() << "Jack server made successfully.";
         const JSList * drivers = jackctl_server_get_drivers_list(jackServer.data());
-
+        updateParamStructure(jackDriverParams, jackctl_server_get_parameters(jackServer.data()));
         while (drivers){
             QString someDriver = QString::fromStdString(jackctl_driver_get_name((jackctl_driver_t *)drivers->data));
             //qDebug() <<someDriver;
@@ -35,23 +35,34 @@ QStringList * JackInterface::getDrivers(){
 void JackInterface::setDriver(const QString & driver){
     m_driver = jackDrivers[driver];
     if (m_driver){
-        updateParamStructure();
+        updateParamStructure(jackDriverParams, jackctl_driver_get_parameters(m_driver));
     }
 }
 
-QStringList * JackInterface::getDriverParams(){
+
+QStringList * JackInterface::getParams(paramStruct_t & paramStruct ){
     QStringList * toRet = new QStringList;
     if (toRet){
 
-    for (QString s : jackDriverParams.keys()){
+    for (QString s : paramStruct.keys()){
         toRet->append(s);
     }}
  return toRet;
 }
 
-void JackInterface::setParameter(QString & param, QVariant & value){
-    jackctl_parameter * jparam = jackDriverParams[param];
+void JackInterface::setServerParameter(QString & param, QVariant & value){
+    jackctl_parameter * sparam = jackServerParams[param];
+    setParameter(sparam, param, value);
+}
+
+void JackInterface::setDriverParameter(QString & param, QVariant & value){
+    jackctl_parameter * sparam = jackDriverParams[param];
+    setParameter(sparam, param, value);
+}
+
+void JackInterface::setParameter(jackctl_parameter_t * jparam, QString & param, QVariant & value){
     if(!jparam){
+        qDebug() <<"Null parameter " <<param <<"sent";
         return; //Failed
     }
     jackctl_param_type_t jparamtype = jackctl_parameter_get_type(jparam);
@@ -74,7 +85,7 @@ void JackInterface::setParameter(QString & param, QVariant & value){
         }
         okay=true;
         std::string ts = tqs.toStdString();
-        size_t strl = qMin((int)ts.length(), JACK_PARAM_STRING_MAX)-1;
+        size_t strl = qMin((int)ts.length(), JACK_PARAM_STRING_MAX-1);
         memcpy(jparamvalue.str, ts.data(), strl);
         jparamvalue.str[strl] = 0;
         break;
@@ -87,15 +98,17 @@ void JackInterface::setParameter(QString & param, QVariant & value){
         break;
     }
     if(okay){
-        jackctl_parameter_set_value(jparam, &jparamvalue);
+        if(jackctl_parameter_set_value(jparam, &jparamvalue)){
         qDebug() <<"Set " <<param <<" to " <<value;
+        }else{
+            qDebug() <<"Failed to set " <<param <<" to " <<value;
+        }
     }
     return;
 }
 
-void JackInterface::updateParamStructure(){
-    jackDriverParams = {};
-    const JSList * params = jackctl_driver_get_parameters(m_driver);
+void JackInterface::updateParamStructure(paramStruct_t & paramStruct, const JSList * params){
+    paramStruct = {};
     while (params){
         jackctl_parameter_t * cParam = (jackctl_parameter_t *)params->data;
         QString someParameter = QString::fromStdString(jackctl_parameter_get_name(cParam));
@@ -113,11 +126,10 @@ void JackInterface::updateParamStructure(){
                 qDebug() <<"Constraint: " <<v.value();
             }
         }
-        jackDriverParams.insert(someParameter, (jackctl_parameter_t *)params->data);
+        paramStruct.insert(someParameter, (jackctl_parameter_t *)params->data);
         params = params->next;
 
     }
-    emit paramsAvailable();
 }
 
 int JackInterface::start(){

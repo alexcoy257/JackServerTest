@@ -15,6 +15,7 @@
 class LRNETJACKSERVERTEST_EXPORT JackInterface : public QObject
 {
     Q_OBJECT
+    typedef QMap<QString,jackctl_parameter_t *> paramStruct_t;
     struct JackServerDeleter
     {
         static inline void cleanup(jackctl_server_t *pointer)
@@ -93,29 +94,48 @@ public:
     JackInterface();
     QStringList * getDrivers();
     void setDriver(const QString & driver);
-    QStringList * getDriverParams();
+
 
 public slots:
-    void setParameter(QString & name, QVariant & value);
+    void setDriverParameter(QString & name, QVariant & value);
+    QStringList * getDriverParams(){
+        return getParams(jackDriverParams);
+    }
+    QStringList * getServerParams(){
+        return getParams(jackServerParams);
+    }
+    void setServerParameter(QString & name, QVariant & value);
     int start();
     int stop();
 
 signals:
     void paramsAvailable();
+    void serverParamsAvailable();
     void jackStarted();
     void jackStopped();
 
+    //jackctl_driver_get_parameters(m_driver)
+    //jackctl_server_get_parameters();
 private:
     QScopedPointer<jackctl_server_t, JackServerDeleter> jackServer;
     jackctl_driver_t * jackDriver;
     QMap<QString,jackctl_driver_t *> jackDrivers;
-    QMap<QString,jackctl_parameter_t *> jackDriverParams;
+    paramStruct_t jackDriverParams;
+    paramStruct_t jackServerParams;
     QMap<QString,JackParamValue> jackDriverDefaultValues;
     jackctl_driver_t * m_driver;
 
     bool m_jackRunning = false;
 
-    void updateParamStructure();
+    void updateParamStructure(paramStruct_t & paramStruct, const JSList * params);
+    void updateDriverParams(JSList * params){
+        updateParamStructure(jackDriverParams, params);
+        emit paramsAvailable();}
+    void updateServerParams(JSList * params){
+        updateParamStructure(jackDriverParams, params);
+        emit paramsAvailable();}
+    QStringList * getParams(paramStruct_t & paramStruct);
+    void setParameter(jackctl_parameter_t *param ,QString & name, QVariant & value);
 };
 
 
