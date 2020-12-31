@@ -7,6 +7,7 @@ CONFIG += c++11
 TARGET = lrnetjackserver
 
 CONFIG += file_copies
+DEFINES += LINUX_KLUDGE
 CONFIG += build_lib
 
 build_lib{

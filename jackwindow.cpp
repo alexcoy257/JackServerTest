@@ -1,6 +1,5 @@
 #include "jackwindow.h"
 #include "ui_jackwindow.h"
-#include "portaudio.h"
 #include "jackparameterform.h"
 #include <QDebug>
 
