@@ -4,18 +4,18 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
 
+TARGET = lrnetjackserver
 
 CONFIG += file_copies
-
-
-
-CONFIG += build_lib
+#CONFIG += build_lib
 
 build_lib{
 COPIES += libraryHeaders
 libraryHeaders.files = jackinterface.h jackparameterform.h lrnetjackservertest.h
 libraryHeaders.path = ./include
-
+win32{
+CONFIG += staticlib
+}
 DESTDIR=./lib
 TEMPLATE = lib
 }
@@ -31,7 +31,7 @@ DESTDIR=./bin
 win32{
 DEFINES += CONFIG_PORTAUDIO
 INCLUDEPATH += "C:\Program Files\JACK2\include"
-CONFIG += static staticlib
+CONFIG += static
 DEFINES += STATIC_LRLIBJACKSERVER
 LIBS += "C:\Program Files\JACK2\lib\libjack64.lib"
 LIBS += "C:\Program Files\JACK2\lib\libjackserver64.lib"
