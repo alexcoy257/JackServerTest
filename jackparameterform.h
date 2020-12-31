@@ -8,7 +8,7 @@
 
 #include "lrnetjackservertest.h"
 
-#ifdef LRNETJACKSERVERTEST_LIBRARY
+#ifdef LIBJACKSERVERTEST_LIBRARY
 
 #include "ui_jackparameterform.h"
 #include "jackinterface.h"

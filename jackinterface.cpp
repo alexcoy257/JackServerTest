@@ -1,5 +1,6 @@
 #include "jackinterface.h"
 
+#undef JACKCTL_H__2EEDAD78_DF4C_4B26_83B7_4FF1A446A47E__INCLUDED
 JackInterface::JackInterface():
 #ifdef JACKCTL_H__2EEDAD78_DF4C_4B26_83B7_4FF1A446A47E__INCLUDED
     jackServer(jackctl_server_create(NULL, NULL))
