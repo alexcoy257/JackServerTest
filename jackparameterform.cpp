@@ -44,7 +44,7 @@ JackParameterForm::JackParameterForm(QWidget *parent) :
         ui->driverBox->addItem(s);
     }
 
-    QObject::connect(ui->driverBox, &QComboBox::currentTextChanged, jackServer, &JackInterface::setDriver);
+    QObject::connect(ui->driverBox, &QComboBox::currentTextChanged, this, &JackParameterForm::sendAllParameters);
 
 
     QObject::connect(jackServer, &JackInterface::paramsAvailable, this, [=](){
