@@ -15,7 +15,7 @@ COPIES += libraryHeaders
 libraryHeaders.files = jackinterface.h jackparameterform.h lrnetjackservertest.h
 libraryHeaders.path = ./include
 win32{
-CONFIG += staticlib
+#CONFIG += staticlib
 }
 DESTDIR=./lib
 TEMPLATE = lib
@@ -30,12 +30,16 @@ DESTDIR=./bin
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 win32{
+INCLUDEPATH += "C:\Program Files\JACK2\include"
+LIBS += "C:\Program Files\JACK2\lib\libjack64.dll.a"
+LIBS += "C:\Program Files\JACK2\lib\libjackserver64.dll.a"
+
 DEFINES += CONFIG_PORTAUDIO
 INCLUDEPATH += "C:\msys64\mingw64\include"
-CONFIG += static
+#CONFIG += static
 #DEFINES += STATIC_LRLIBJACKSERVER
-LIBS += "C:\msys64\mingw64\lib\libjack64.dll.a"
-LIBS += "C:\msys64\mingw64\lib\libjackserver64.dll.a"
+#LIBS += "C:\msys64\mingw64\lib\libjack64.dll.a"
+#LIBS += "C:\msys64\mingw64\lib\libjackserver64.dll.a"
 #LIBS += -Bstatic "C:\msys64\mingw64\lib\libportaudio.a" -Bdynamic
 LIBS += -mthreads -IC:/msys64/mingw64/include -LC:/msys64/mingw64/lib
 LIBS += -lportaudio -lwinmm -lm -luuid -lsetupapi -lole32
