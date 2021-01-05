@@ -8,22 +8,41 @@ TARGET = lrnetjackserver
 
 CONFIG += file_copies
 DEFINES += LINUX_KLUDGE
-CONFIG += build_lib
 
-build_lib{
+!isEmpty(jack){
+message(Using JACK at $$jack)
+INCLUDEPATH+=$$jack/include
+LIBS += -L$$jack/lib
+}
+
+# isEmpty(PREFIX) will allow path to be changed during the command line
+# call to qmake, e.g. qmake PREFIX=/usr
+isEmpty(PREFIX) {
+ PREFIX = /usr/local
+}
+
+message(Installing to $$PREFIX)
+
+DESTDIR=./bin
+
+shared{
+CONFIG += create_prl
 COPIES += libraryHeaders
 libraryHeaders.files = jackinterface.h jackparameterform.h lrnetjackservertest.h
-libraryHeaders.path = ./include
+libraryHeaders.path = $$PREFIX/include
+INSTALLS += libraryHeaders
+
 win32{
 #CONFIG += staticlib
 }
 DESTDIR=./lib
 TEMPLATE = lib
+target.path = $$PREFIX/lib/
 }
 
-!build_lib{
-DESTDIR=./bin
-}
+
+
+
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -56,10 +75,10 @@ LIBS += -ljack -ljackserver -lasound
 macx{
 DEFINES += CONFIG_COREAUDIO __MAC_OSX__
 
-INCLUDEPATH +=/Volumes/Alex_Coy_Projects_2/jack2/include
+#INCLUDEPATH +=/Volumes/Alex_Coy_Projects_2/jack2/include
 
 LIBS += -framework CoreAudio -framework CoreFoundation
-LIBS += -L/Volumes/Alex_Coy_Projects_2/jack2/lib -ljack -ljackserver
+LIBS += -ljack -ljackserver
 }
 
 DEFINES += LIBJACKSERVERTEST_LIBRARY
@@ -83,6 +102,6 @@ FORMS += \
     jackwindow.ui
 
 # Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
+#qnx: target.path = /tmp/$${TARGET}/bin
+#else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
