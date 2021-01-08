@@ -30,13 +30,16 @@ JackInterface::JackInterface():
 #ifdef LINUX_KLUDGE
     jackServer(jackctl_server_create(NULL, NULL))
 #else
+#ifdef DBUS
 jackServer(jackctl_server_create2(audio_acquire, audio_release, audio_reserve_loop))
- //jackServer(jackctl_server_create2(NULL, NULL, NULL))
+#else
+ jackServer(jackctl_server_create2(NULL, NULL, NULL))
+#endif
 #endif
 {
-    const char * dev = "Audio0";
-    audio_acquire(dev);
-    audio_release(dev);
+    //const char * dev = "Audio0";
+    //audio_acquire(dev);
+    //audio_release(dev);
     if(jackServer){
         qDebug() << "Jack server made successfully.";
         const JSList * drivers = jackctl_server_get_drivers_list(jackServer.data());
