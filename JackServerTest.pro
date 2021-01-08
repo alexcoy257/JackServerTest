@@ -7,7 +7,7 @@ CONFIG += c++11
 TARGET = lrnetjackserver
 
 CONFIG += file_copies
-DEFINES += LINUX_KLUDGE
+#DEFINES += LINUX_KLUDGE
 
 !isEmpty(jack){
 message(Using JACK at $$jack)
@@ -70,6 +70,10 @@ linux{
 DEFINES += CONFIG_ALSA_SEQ
 
 LIBS += -ljack -ljackserver -lasound
+CONFIG += link_pkgconfig
+PKGCONFIG += dbus-1
+
+SOURCES += audio_reserve.c reserve.c
 }
 
 macx{
