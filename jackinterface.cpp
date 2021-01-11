@@ -1,13 +1,45 @@
 #include "jackinterface.h"
 
+#ifdef DBUS
+#include <cstdlib>
+#include <dbus/dbus.h>
+#include "audio_reserve.h"
+#endif
+#include <cstdio>
+
+#if defined(JACK_DBUS) && defined(__linux__)
+#include <cstdlib>
+#include <dbus/dbus.h>
+#include "audio_reserve.h"
+#endif
+
+
+/*
+Q_DECL_IMPORT bool audio_acquire(const char * device_name);
+Q_DECL_IMPORT void audio_release(const char * device_name);
+Q_DECL_IMPORT void audio_reserve_loop();
+*/
+/*
+extern "C" bool audio_acquire(const char * device_name);
+extern "C" void audio_release(const char * device_name);
+extern "C" void audio_reserve_loop(const char * device_name);
+*/
+
 #undef JACKCTL_H__2EEDAD78_DF4C_4B26_83B7_4FF1A446A47E__INCLUDED
 JackInterface::JackInterface():
 #ifdef LINUX_KLUDGE
     jackServer(jackctl_server_create(NULL, NULL))
 #else
+#ifdef DBUS
+jackServer(jackctl_server_create2(audio_acquire, audio_release, audio_reserve_loop))
+#else
  jackServer(jackctl_server_create2(NULL, NULL, NULL))
 #endif
+#endif
 {
+    //const char * dev = "Audio0";
+    //audio_acquire(dev);
+    //audio_release(dev);
     if(jackServer){
         qDebug() << "Jack server made successfully.";
         const JSList * drivers = jackctl_server_get_drivers_list(jackServer.data());
@@ -159,6 +191,8 @@ int JackInterface::stop(){
     if (m_jackRunning){
     if(jackctl_server_stop(jackServer.data())){
         qDebug() <<"Server stopped successfully. ";
+        if(jackctl_server_close(jackServer.data()))
+        qDebug() <<"Server closed succesfully";
         m_jackRunning = false;
         emit jackStopped();
         return 0;       
