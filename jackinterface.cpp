@@ -43,7 +43,8 @@ jackServer(jackctl_server_create2(audio_acquire, audio_release, audio_reserve_lo
     if(jackServer){
         qDebug() << "Jack server made successfully.";
         const JSList * drivers = jackctl_server_get_drivers_list(jackServer.data());
-        updateParamStructure(jackDriverParams, jackctl_server_get_parameters(jackServer.data()));
+        //printf("Update driver parameter structure \n");
+        updateParamStructure(jackServerParams, jackctl_server_get_parameters(jackServer.data()));
         while (drivers){
             QString someDriver = QString::fromStdString(jackctl_driver_get_name((jackctl_driver_t *)drivers->data));
             //qDebug() <<someDriver;
@@ -69,6 +70,7 @@ void JackInterface::setDriver(const QString & driver){
     if (m_driver){
         updateParamStructure(jackDriverParams, jackctl_driver_get_parameters(m_driver));
     }
+
 }
 
 
@@ -84,6 +86,7 @@ QStringList * JackInterface::getParams(paramStruct_t & paramStruct ){
 
 void JackInterface::setServerParameter(QString & param, QVariant & value){
     jackctl_parameter * sparam = jackServerParams[param];
+    printf("Try to set server %s \n", param.toStdString().data());
     setParameter(sparam, param, value);
 }
 
@@ -95,6 +98,7 @@ void JackInterface::setDriverParameter(QString & param, QVariant & value){
 void JackInterface::setParameter(jackctl_parameter_t * jparam, QString & param, QVariant & value){
     if(!jparam){
         qDebug() <<"Null parameter " <<param <<"sent";
+        printf("Null parameter %s sent \n", param.toStdString().data());
         return; //Failed
     }
     jackctl_param_type_t jparamtype = jackctl_parameter_get_type(jparam);
@@ -131,10 +135,19 @@ void JackInterface::setParameter(jackctl_parameter_t * jparam, QString & param, 
     }
     if(okay){
         if(jackctl_parameter_set_value(jparam, &jparamvalue)){
-        qDebug() <<"Set " <<param <<" to " <<value;
+        //qDebug() <<"Set " <<param <<" to " <<value;
+        printf("Set %s to %s \n", param.toStdString().data(),
+        value.toString().toStdString().data());
         }else{
             qDebug() <<"Failed to set " <<param <<" to " <<value;
+            printf("Failed to set %s to %s \n", param.toStdString().data(),
+        value.toString().toStdString().data());
         }
+    }else{
+        qDebug() <<"Not okay parameter type";
+        printf("Wrong type for %s \n",
+        param.toStdString().data()
+        );
     }
     return;
 }
@@ -145,6 +158,7 @@ void JackInterface::updateParamStructure(paramStruct_t & paramStruct, const JSLi
         jackctl_parameter_t * cParam = (jackctl_parameter_t *)params->data;
         QString someParameter = QString::fromStdString(jackctl_parameter_get_name(cParam));
         qDebug() << "Looking at: " <<someParameter;
+        printf("Looking at %s \n", jackctl_parameter_get_name(cParam));
         jackctl_param_type_t cParamType = jackctl_parameter_get_type(cParam);
         if(jackctl_parameter_has_enum_constraint(cParam)){
             uint32_t numConstraints = jackctl_parameter_get_enum_constraints_count(cParam);
@@ -172,6 +186,9 @@ int JackInterface::start(){
         return 1;
     }
     if(jackctl_server_open(jackServer.data(), m_driver)){
+        
+
+
         if(jackctl_server_start(jackServer.data())){
             qDebug() <<"Started Jack!";
             m_jackRunning = true;

@@ -53,6 +53,8 @@ win32{
 #LIBS += "C:\Program Files\JACK2\lib\libjack64.dll.a"
 #LIBS += "C:\Program Files\JACK2\lib\libjackserver64.dll.a"
 
+#DEFINES += __WIN_32__
+
 DEFINES += CONFIG_PORTAUDIO
 INCLUDEPATH += "C:\msys64\mingw64\include"
 #CONFIG += static

@@ -73,16 +73,27 @@ JackParameterForm::JackParameterForm(QWidget *parent) :
 #endif
 
     sendAllParameters();
+    /*
     {QString arg = "verbose";
      QVariant v(true);
     jackServer->setServerParameter(arg, v);
-    }
+    }*/
 }
 
 void JackParameterForm::sendAllParameters(){
     jackServer->setDriver(ui->driverBox->currentText());
+    #ifdef WIN32
+        
+        printf("Try to set sync \n");    
+        QString ts = "sync";
+        QVariant tb = true;
+        jackServer->setServerParameter(ts, tb);
+        
+        #endif
     sendNewRate(ui->m_srChoice->currentText());
     sendNewPeriod(ui->m_fppChoice->currentText());
+
+    
 }
 
 void JackParameterForm::sendNewRate(const QString & value){
