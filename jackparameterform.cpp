@@ -107,6 +107,31 @@ void JackParameterForm::sendNewPeriod(const QString & value){
         jackServer->setDriverParameter(tmp, tmpv);
     }
 
+void JackParameterForm::loadSetup(QSettings &settings){
+    settings.beginGroup("/Jack");
+    driverBox->setCurrentText(settings.value("Driver","").toString());
+    m_fppChoice->setCurrentText(settings.value("FPP","").toString());
+    m_srChoice->setCurrentText(settings.value("SR","").toString());
+    iFaceBox->setCurrentText(settings.value("iFace","").toString());
+    oFaceBox->setCurrentText(settings.value("oFace","").toString());
+    settings.endGroup();
+
+    sendAllParameters();
+}
+
+void JackParameterForm::saveSetup(QSettings &settings){
+    settings.beginGroup("/Jack");
+    settings.setValue("Driver", driverBox->currentText());
+    settings.setValue("FPP", m_fppChoice->currentText());
+    settings.setValue("SR", m_srChoice->currentText());
+    settings.setValue("iFace", iFaceBox->currentText());
+    settings.setValue("oFace", oFaceBox->currentText());
+    settings.endGroup();
+
+    settings.sync();
+}
+
+
 JackParameterForm::~JackParameterForm()
 {
     delete ui;

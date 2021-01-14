@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QComboBox>
 #include <QLabel>
+#include <QSettings>
 
 
 #include "lrnetjackservertest.h"
@@ -41,6 +42,8 @@ public:
      qjackctlInterfaceComboBox * oFaceBox;
      QLabel * iFaceLabel;
      QLabel * oFaceLabel;
+     void loadSetup(QSettings &settings);
+     void saveSetup(QSettings &settings);
      void sendAllParameters();
 
 signals:
