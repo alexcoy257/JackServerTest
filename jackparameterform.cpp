@@ -134,5 +134,7 @@ void JackParameterForm::saveSetup(QSettings &settings){
 
 JackParameterForm::~JackParameterForm()
 {
+    if (jackServer)
+        delete jackServer;
     delete ui;
 }
