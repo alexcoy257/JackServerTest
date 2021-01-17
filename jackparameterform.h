@@ -33,7 +33,7 @@ class LRNETJACKSERVERTEST_EXPORT JackParameterForm : public QWidget
      Ui::JackParameterForm *ui;
 public:
     explicit JackParameterForm(QWidget *parent = nullptr);
-    ~JackParameterForm();
+    virtual ~JackParameterForm();
 
      QComboBox * driverBox;
      QComboBox * m_fppChoice;

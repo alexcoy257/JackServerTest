@@ -92,6 +92,7 @@ class LRNETJACKSERVERTEST_EXPORT JackInterface : public QObject
     };
 public:
     JackInterface();
+    virtual ~JackInterface();
     QStringList * getDrivers();
     void setDriver(const QString & driver);
     ~JackInterface();

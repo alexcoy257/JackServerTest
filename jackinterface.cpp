@@ -55,6 +55,10 @@ jackServer(jackctl_server_create2(audio_acquire, audio_release, audio_reserve_lo
     }
 }
 
+JackInterface::~JackInterface(){
+    stop();
+}
+
 QStringList * JackInterface::getDrivers(){
     QStringList * toRet = new QStringList;
     if (toRet){
@@ -157,8 +161,8 @@ void JackInterface::updateParamStructure(paramStruct_t & paramStruct, const JSLi
     while (params){
         jackctl_parameter_t * cParam = (jackctl_parameter_t *)params->data;
         QString someParameter = QString::fromStdString(jackctl_parameter_get_name(cParam));
-        qDebug() << "Looking at: " <<someParameter;
-        printf("Looking at %s \n", jackctl_parameter_get_name(cParam));
+        //qDebug() << "Looking at: " <<someParameter;
+        //printf("Looking at %s \n", jackctl_parameter_get_name(cParam));
         jackctl_param_type_t cParamType = jackctl_parameter_get_type(cParam);
         if(jackctl_parameter_has_enum_constraint(cParam)){
             uint32_t numConstraints = jackctl_parameter_get_enum_constraints_count(cParam);
