@@ -95,7 +95,6 @@ public:
     virtual ~JackInterface();
     QStringList * getDrivers();
     void setDriver(const QString & driver);
-    ~JackInterface();
 
 
 public slots:

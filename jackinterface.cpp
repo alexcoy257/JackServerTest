@@ -227,10 +227,3 @@ int JackInterface::stop(){
     return 0;
 
 }
-
-JackInterface::~JackInterface(){
-    if (m_jackRunning){
-        jackServer.~QScopedPointer();
-    }
-
-}
