@@ -55,8 +55,11 @@ JackParameterForm::JackParameterForm(QWidget *parent) :
 
     QObject::connect(ui->m_startJackButton, &QAbstractButton::released, jackServer, &JackInterface::start);
     QObject::connect(ui->m_stopJackButton, &QAbstractButton::released, jackServer, &JackInterface::stop);
-    QObject::connect(jackServer, &JackInterface::jackStarted, this, [=](){emit jackStarted();});
-    QObject::connect(jackServer, &JackInterface::jackStopped, this, [=](){emit jackStopped();});
+    QObject::connect(jackServer, &JackInterface::jackStarted, this, [=](){emit jackStarted();
+                                                                          ui->m_startJackButton->setDisabled(true);
+                                                                          ui->m_startJackButton->clearFocus();});
+    QObject::connect(jackServer, &JackInterface::jackStopped, this, [=](){emit jackStopped();
+                                                                          ui->m_startJackButton->setEnabled(true);});
 
 #ifndef __MAC_OSX__
     QObject::connect(ui->iFaceBox, &qjackctlInterfaceComboBox::currentTextChanged, this, [=](const QString & dev){
