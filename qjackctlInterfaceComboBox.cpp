@@ -334,12 +334,13 @@ void qjackctlInterfaceComboBox::populateModel (void)
         if (file.open(QIODevice::ReadOnly)) {
             QTextStream stream(&file);
             QString sLine;
-            QRegExp rxDevice("audio([0-9]) at (.*)");
+            QRegularExpression rxDevice("audio([0-9]) at (.*)");
             while (!stream.atEnd()) {
                 sLine = stream.readLine();
-                if (rxDevice.exactMatch(sLine)) {
-                    sName = "/dev/audio" + rxDevice.cap(1);
-                    addCard(sName, rxDevice.cap(2));
+                QRegularExpressionMatch match = rxDevice.match(sLine);
+                if (match.hasMatch()) {
+                    sName = "/dev/audio" + match.captured(1);
+                    addCard(sName, match.captured(2));
                     if (sCurName == sName)
                         iCurCard = iCards;
                     ++iCards;
@@ -356,22 +357,26 @@ void qjackctlInterfaceComboBox::populateModel (void)
             QTextStream stream(&file);
             QString sLine;
             bool bAudioDevices = false;
-            QRegExp rxHeader("Audio devices.*", Qt::CaseInsensitive);
-            QRegExp rxDevice("([0-9]+):[ ]+(.*)");
+            QRegularExpression rxHeader("Audio devices.*", QRegularExpression::CaseInsensitiveOption);
+            QRegularExpression rxDevice("([0-9]+):[ ]+(.*)");
             while (!stream.atEnd()) {
                 sLine = stream.readLine();
                 if (bAudioDevices) {
-                    if (rxDevice.exactMatch(sLine)) {
-                        sName = "/dev/dsp" + rxDevice.cap(1);
-                        addCard(sName, rxDevice.cap(2));
+                    QRegularExpressionMatch match = rxDevice.match(sLine);
+                    if (match.hasMatch()) {
+                        sName = "/dev/dsp" + match.captured(1);
+                        addCard(sName, match.captured(2));
                         if (sCurName == sName)
                             iCurCard = iCards;
                         ++iCards;
                     }
                     else break;
                 }
-                else if (rxHeader.exactMatch(sLine))
+                else {
+                    QRegularExpressionMatch match = rxHeader.match(sLine);
+                    if (match.hasMatch())
                     bAudioDevices = true;
+                }
             }
             file.close();
         }

@@ -5,6 +5,8 @@
 #include <QObject>
 #include <QHash>
 #include <QMap>
+#include <QVariant>
+#include <QMetaType>
 #undef signals
 #include <jack/jack.h>
 #include <jack/control.h>
@@ -36,27 +38,27 @@ class LRNETJACKSERVERTEST_EXPORT JackInterface : public QObject
         }
         JackParamValue(QVariant value){
 
-            if (value.canConvert(QVariant::Int)){
+            if (value.canConvert(QMetaType(QMetaType::Int))){
                 m_value.i = value.toInt();
                 m_type = JackParamInt;
             }
 
-            else if (value.canConvert(QVariant::UInt)){
+            else if (value.canConvert(QMetaType(QMetaType::UInt))){
                 m_value.ui = value.toUInt();
                 m_type = JackParamUInt;
             }
 
-            else if (value.canConvert(QVariant::Char)){
+            else if (value.canConvert(QMetaType(QMetaType::Char))){
                 m_value.c = value.toChar().toLatin1();
                 m_type = JackParamChar;
             }
 
-            else if (value.canConvert(QVariant::Bool)){
+            else if (value.canConvert(QMetaType(QMetaType::Bool))){
                 m_value.b = value.toBool();
                 m_type = JackParamBool;
             }
 
-            else if (value.canConvert(QVariant::String)){
+            else if (value.canConvert(QMetaType(QMetaType::QString))){
                 std::string ts = value.toString().toStdString();
                 size_t strl = qMin((int)ts.length(), JACK_PARAM_STRING_MAX)-1;
                 memcpy(m_value.str, ts.data(), strl);

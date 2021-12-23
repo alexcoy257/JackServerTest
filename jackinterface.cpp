@@ -110,11 +110,11 @@ void JackInterface::setParameter(jackctl_parameter_t * jparam, QString & param, 
     bool okay;
     switch (jparamtype){
     case JackParamInt:
-        okay = value.canConvert(QVariant::Int);
+        okay = value.canConvert(QMetaType(QMetaType::Int));
         jparamvalue.i = value.toInt();
         break;
     case JackParamBool:
-        okay = value.canConvert(QVariant::Bool);
+        okay = value.canConvert(QMetaType(QMetaType::Bool));
         jparamvalue.b = value.toBool();
         break;
     case JackParamString:{
